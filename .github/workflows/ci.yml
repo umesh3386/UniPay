@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SPRING_PROFILES_ACTIVE: prod
+      SPRING_PROFILES_ACTIVE: test
 
       # These must be configured in your GitHub repository secrets.
       # See README.md → "CI/CD Setup" for instructions.
@@ -44,12 +44,27 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Build project
-        run: mvn clean install -DskipTests
+      - name: Build and run tests
+        run: mvn clean install
+
+      - name: Start PostgreSQL container for smoke test
+        run: docker run -d --name smoke-postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=unipay_db postgres:16-alpine
 
       - name: Smoke Test — Health Check
         run: |
-          # Start app in background for a quick smoke test
-          # Replace the URL below with your deployed backend URL
-          echo "Build completed successfully ✅"
-          echo "To run integration tests, configure your deployment URL in the workflow."
+          java -Dspring.profiles.active=test -jar target/unipay-backend-1.0.0.jar &
+          APP_PID=$!
+          echo "Waiting for application to start (PID: $APP_PID)..."
+          for i in $(seq 1 30); do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/api/health || true)
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              echo "Smoke test PASSED: Application is UP (HTTP $HTTP_STATUS) ✅"
+              kill $APP_PID
+              exit 0
+            fi
+            echo "Waiting for app to become healthy... attempt $i/30 (status: $HTTP_STATUS)"
+            sleep 2
+          done
+          echo "Smoke test FAILED: Application did not respond with 200 within timeout ❌"
+          kill $APP_PID || true
+          exit 1
