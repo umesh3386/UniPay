@@ -1,7 +1,6 @@
 package com.umesh.unipay_1.controller;
 
 import com.umesh.unipay_1.dto.*;
-import com.umesh.unipay_1.security.authorization.SuperAdminOnly;
 import com.umesh.unipay_1.service.CardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,7 +27,6 @@ public class CardController {
      * Cards must be registered before they can be linked to a user.
      */
     @PostMapping
-    @SuperAdminOnly
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Register a new Card (ADMIN only)",
@@ -48,7 +46,6 @@ public class CardController {
      * Link an existing card to a user.
      */
     @PostMapping("/link")
-    @SuperAdminOnly
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Link Card to User (ADMIN only)",
@@ -67,7 +64,6 @@ public class CardController {
      * Remove the link between a card and its current user.
      */
     @DeleteMapping("/{cardUid}/unlink")
-    @SuperAdminOnly
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Unlink Card from User (ADMIN only)",
@@ -85,7 +81,6 @@ public class CardController {
      * Mark any card as ACTIVE (ADMIN only).
      */
     @PatchMapping("/{cardUid}/activate")
-    @SuperAdminOnly
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Activate a Card (ADMIN only)",
@@ -102,7 +97,6 @@ public class CardController {
      * Mark any card as INACTIVE (ADMIN only).
      */
     @PatchMapping("/{cardUid}/deactivate")
-    @SuperAdminOnly
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Deactivate a Card (ADMIN only)",

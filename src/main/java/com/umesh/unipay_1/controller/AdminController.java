@@ -7,7 +7,6 @@ import com.umesh.unipay_1.dto.UserListResponse;
 import com.umesh.unipay_1.dto.UserProfileResponse;
 import com.umesh.unipay_1.dto.UserResponse;
 import com.umesh.unipay_1.enums.Role;
-import com.umesh.unipay_1.security.authorization.SuperAdminOnly;
 import com.umesh.unipay_1.service.MerchantService;
 import com.umesh.unipay_1.service.UserService;
 
@@ -39,12 +38,9 @@ public class AdminController {
      * POST /api/admin/merchants/register
      *
      * Register a new MERCHANT account.
-     * Protected at two layers:
-     *   1. URL-level: SecurityConfig enforces ROLE_ADMIN on /api/admin/**
-     *   2. Method-level: @SuperAdminOnly AOP annotation (double guard)
+     * Protected at the URL and method-security layers.
      */
     @PostMapping("/merchants/register")
-    @SuperAdminOnly
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Register a new Merchant (ADMIN only)",
@@ -62,10 +58,9 @@ public class AdminController {
      * GET /api/admin/merchants
      *
      * Retrieve a list of all registered merchants.
-     * Protected at two layers — same as register.
+     * Protected at the URL and method-security layers.
      */
     @GetMapping("/merchants")
-    @SuperAdminOnly
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "List all Merchants (ADMIN only)",
@@ -119,4 +114,3 @@ public class AdminController {
         return ResponseEntity.ok(userService.unblockUser(id));
     }
 }
-
