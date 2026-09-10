@@ -2,7 +2,7 @@
 
 # 💳 Unipay — Campus Cashless Payment Backend
 
-**A production-grade Spring Boot backend powering a complete campus cashless ecosystem with NFC card payments, digital wallet top-ups, and real-time transaction processing.**
+**A Spring Boot backend with automated tests, CI, schema migrations, and secure campus cashless payment capabilities.**
 
 [![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat-square&logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0-6DB33F?style=flat-square&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
@@ -29,8 +29,8 @@ The project also includes an **ESP32-based NFC POS terminal** ([`hardware/`](har
 ┌──────────────────────────────────────────────────────────────────────┐
 │                         CLIENT LAYER                                 │
 │  ┌─────────────┐  ┌──────────────────┐  ┌────────────────────────┐  │
-│  │  Mobile App  │  │  Admin Dashboard │  │  ESP32 NFC POS Terminal│  │
-│  │  (Student)   │  │  (Web Panel)     │  │  (Hardware Device)     │  │
+│  │  Mobile App  │  │  Flutter App     │  │  ESP32 NFC POS Terminal│  │
+│  │  (Student)   │  │  (Android/iOS/Web)│  │  (Hardware Device)     │  │
 │  └──────┬───────┘  └───────┬──────────┘  └───────────┬────────────┘  │
 └─────────┼──────────────────┼─────────────────────────┼───────────────┘
           │                  │                         │
@@ -69,7 +69,7 @@ The project also includes an **ESP32-based NFC POS terminal** ([`hardware/`](har
 
 ### 🛡️ Role-Based Access Control (RBAC)
 - Strict segregation between `STUDENT`, `MERCHANT`, `ADMIN`, and `SUPER_ADMIN` operations
-- Enforced at the Spring Security filter chain + custom AOP annotations
+- Enforced at the Spring Security filter chain + method-level authorization
 
 ### 🔒 Pessimistic Row-Level Locking
 - Wallet balances are locked in PostgreSQL via `SELECT ... FOR UPDATE` during transactions
